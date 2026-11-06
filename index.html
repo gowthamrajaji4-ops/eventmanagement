@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUMINA — Events & Entertainment India</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/index.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.0.8/index.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fdf4ff', 100: '#fae8ff', 200: '#f5d0fe', 300: '#f0abfc',
+                            400: '#e879f9', 500: '#d946ef', 600: '#c026d3', 700: '#a21caf',
+                            800: '#86198f', 900: '#701a75',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Playfair Display', serif; }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 40%, #24243e 70%, #0f0c29 100%);
+            position: relative; overflow: hidden;
+        }
+        .hero-gradient::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at 20% 50%, rgba(217, 70, 239, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+            animation: heroFloat 15s ease-in-out infinite;
+        }
+        @keyframes heroFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, -2%) rotate(1deg); }
+            66% { transform: translate(-1%, 1%) rotate(-1deg); }
+        }
+
+        .orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.4; animation: orbFloat 8s ease-in-out infinite; }
+        .orb-1 { width: 300px; height: 300px; background: #d946ef; top: 10%; left: 10%; }
+        .orb-2 { width: 200px; height: 200px; background: #8b5cf6; top: 60%; right: 10%; animation-delay: -3s; }
+        .orb-3 { width: 250px; height: 250px; background: #ec4899; bottom: 10%; left: 40%; animation-delay: -5s; }
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+
+        .particles { position: absolute; inset: 0; overflow: hidden; }
+        .particle {
+            position: absolute; width: 3px; height: 3px;
+            background: rgba(255, 255, 255, 0.5); border-radius: 50%;
+            animation: particleRise linear infinite;
+        }
+        @keyframes particleRise {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; } 90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #f0abfc, #d946ef, #a855f7, #ec4899);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        .service-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+        .service-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(217, 70, 239, 0.1), rgba(139, 92, 246, 0.1));
+            opacity: 0; transition: opacity 0.4s;
+        }
+        .service-card:hover::before { opacity: 1; }
+        .service-card:hover { transform: translateY(-8px); box-shadow: 0 20px 60px rgba(217, 70, 239, 0.2); }
+
+        .event-card { transition: all 0.3s ease; overflow: hidden; }
+        .event-card:hover { transform: scale(1.02); }
+        .event-card:hover .event-img { transform: scale(1.1); }
+        .event-img { transition: transform 0.5s ease; }
+
+        .gallery-item { transition: all 0.4s ease; overflow: hidden; }
+        .gallery-item:hover { transform: scale(1.03); z-index: 10; }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+        .gallery-overlay { transition: opacity 0.4s ease; opacity: 0; }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .nav-scrolled {
+            background: rgba(15, 12, 41, 0.95) !important;
+            backdrop-filter: blur(20px); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .glow-btn { position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .glow-btn::before {
+            content: ''; position: absolute; inset: -2px;
+            background: linear-gradient(135deg, #d946ef, #8b5cf6, #ec4899, #d946ef);
+            border-radius: inherit; z-index: -1;
+            animation: glowRotate 3s linear infinite; background-size: 300% 300%;
+        }
+        @keyframes glowRotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .glow-btn:hover { box-shadow: 0 0 30px rgba(217, 70, 239, 0.5); transform: translateY(-2px); }
+
+        .testimonial-card { transition: all 0.3s ease; }
+        .testimonial-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+
+        .mobile-menu { transform: translateX(100%); transition: transform 0.3s ease; }
+        .mobile-menu.open { transform: translateX(0); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f0c29; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(#d946ef, #8b5cf6); border-radius: 4px; }
+
+        .marquee { animation: marquee 30s linear infinite; }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .form-input:focus {
+            border-color: #d946ef; box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.2);
+        }
+
+        .pulse-ring { animation: pulseRing 2s ease-out infinite; }
+        @keyframes pulseRing {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        .rangoli-bg {
+            background-image: radial-gradient(circle at 20% 80%, rgba(255, 153, 0, 0.05) 0%, transparent 30%),
+                              radial-gradient(circle at 80% 20%, rgba(217, 70, 239, 0.05) 0%, transparent 30%);
+        }
+
+        /* Admin Panel Styles */
+        .admin-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+            z-index: 100; display: none; align-items: center; justify-content: center;
+        }
+        .admin-overlay.active { display: flex; }
+
+        .admin-panel {
+            position: fixed; inset: 0; z-index: 101; background: #0a0820;
+            display: none; overflow: hidden;
+        }
+        .admin-panel.active { display: flex; }
+
+        .admin-sidebar {
+            width: 260px; background: #12102e; border-right: 1px solid rgba(255,255,255,0.08);
+            display: flex; flex-direction: column; overflow-y: auto;
+        }
+        .admin-main { flex: 1; overflow-y: auto; padding: 32px; }
+
+        .admin-tab {
+            padding: 12px 20px; cursor: pointer; color: #9ca3af;
+            border-left: 3px solid transparent; transition: all 0.2s;
+            display: flex; align-items: center; gap: 12px; font-size: 14px;
+        }
+        .admin-tab:hover { background: rgba(217, 70, 239, 0.08); color: #fff; }
+        .admin-tab.active {
+            background: rgba(217, 70, 239, 0.15); color: #f0abfc;
+            border-left-color: #d946ef;
+        }
+
+        .admin-field { margin-bottom: 16px; }
+        .admin-field label {
+            display: block; font-size: 12px; color: #9ca3af; margin-bottom: 6px;
+            text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;
+        }
+        .admin-field input, .admin-field textarea, .admin-field select {
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 14px;
+            transition: all 0.2s;
+        }
+        .admin-field input:focus, .admin-field textarea:focus, .admin-field select:focus {
+            outline: none; border-color: #d946ef; background: rgba(217, 70, 239, 0.05);
+        }
+        .admin-field textarea { resize: vertical; min-height: 80px; }
+
+        .admin-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 20px; margin-bottom: 16px;
+        }
+        .admin-card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .toast {
+            position: fixed; top: 24px; right: 24px; z-index: 200;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white; padding: 14px 24px; border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+            transform: translateX(400px); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600; display: flex; align-items: center; gap: 10px;
+        }
+        .toast.show { transform: translateX(0); }
+
+        .admin-trigger {
+            position: fixed; bottom: 20px; right: 20px; z-index: 40;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s; color: #9ca3af;
+        }
+        .admin-trigger:hover { background: rgba(217, 70, 239, 0.2); color: #f0abfc; border-color: #d946ef; }
+
+        /* Media Upload Styles */
+        .media-upload {
+            border: 2px dashed rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.02);
+            position: relative;
+        }
+        .media-upload:hover, .media-upload.dragover {
+            border-color: #d946ef;
+            background: rgba(217, 70, 239, 0.05);
+        }
+        .media-upload.has-file {
+            padding: 12px;
+            border-style: solid;
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .media-upload input[type="file"] {
+            display: none;
+        }
+        .media-preview {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
+        .media-preview img, .media-preview video {
+            max-width: 100%;
+            max-height: 240px;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+        .media-remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .media-remove:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        .media-info {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .media-info .file-name {
+            color: #10b981;
+            font-weight: 500;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .upload-progress {
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .upload-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #d946ef, #8b5cf6);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Real image display in cards */
+        .real-image-bg {
+            background-size: cover;
+            background-position: center;
+        }
+        .real-image-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @media (max-width: 768px) {
+            .admin-sidebar { width: 220px; }
+            .admin-main { padding: 20px; }
+        }
+    </style>
+</head>
+<body class="bg-[#0f0c29] text-white overflow-x-hidden">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        <span id="toastMsg">Changes saved successfully!</span>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 via-brand-500 to-purple-600 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                </div>
+                <span id="brandName" class="text-2xl font-display font-bold tracking-wide">LUMINA</span>
+            </a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#home" class="text-sm font-medium hover:text-brand-400 transition-colors">Home</a>
+                <a href="#services" class="text-sm font-medium hover:text-brand-400 transition-colors">Services</a>
+                <a href="#events" class="text-sm font-medium hover:text-brand-400 transition-colors">Events</a>
+                <a href="#gallery" class="text-sm font-medium hover:text-brand-400 transition-colors">Gallery</a>
+                <a href="#testimonials" class="text-sm font-medium hover:text-brand-400 transition-colors">Reviews</a>
+                <a href="#contact" class="glow-btn px-6 py-2.5 bg-brand-600 rounded-full text-sm font-semibold">Book Now</a>
+            </div>
+            <button id="menuBtn" class="md:hidden text-white">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu fixed inset-0 z-50 bg-[#0f0c29]/98 flex flex-col items-center justify-center gap-8">
+        <button id="closeMenu" class="absolute top-6 right-6 text-white">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+        <a href="#home" class="text-2xl font-medium mobile-link">Home</a>
+        <a href="#services" class="text-2xl font-medium mobile-link">Services</a>
+        <a href="#events" class="text-2xl font-medium mobile-link">Events</a>
+        <a href="#gallery" class="text-2xl font-medium mobile-link">Gallery</a>
+        <a href="#testimonials" class="text-2xl font-medium mobile-link">Reviews</a>
+        <a href="#contact" class="glow-btn px-8 py-3 bg-brand-600 rounded-full text-lg font-semibold mobile-link">Book Now</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-gradient min-h-screen flex items-center relative">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="particles" id="particles"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10 pt-20">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 mb-6">
+                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        <span id="heroBadge" class="text-sm text-gray-300">Now Booking Shaadi Season 2026–27</span>
+                    </div>
+                    <h1 id="heroTitle" class="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[0.95] mb-6">
+                        Jashn <br><span class="text-gradient">Zindagi</span><br>Ka
+                    </h1>
+                    <p id="heroDesc" class="text-lg text-gray-400 max-w-lg mb-8 leading-relaxed">
+                        Premium event planning and entertainment across India. From grand Indian weddings and Sangeet nights to Bollywood concerts and corporate galas — we turn every celebration into an unforgettable spectacle.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#contact" class="glow-btn px-8 py-4 bg-brand-600 rounded-full font-semibold text-lg flex items-center gap-2">
+                            <span id="heroCta1">Plan Your Event</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                            </svg>
+                        </a>
+                        <a href="#events" class="px-8 py-4 rounded-full font-semibold text-lg border border-white/20 hover:bg-white/10 transition-all flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            <span id="heroCta2">Watch Showreel</span>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-8 mt-12">
+                        <div>
+                            <div class="text-3xl font-bold text-gradient counter" data-target="500" data-suffix="+">0</div>
+                            <div id="stat1Label" class="text-sm text-gray-500">Events Hosted</div>
+                        </div>
+                        <div class="w-px h-12 bg-white/10"></div>
+                        <div>
+                            <div class="text-3xl font-bold text-gradient counter" data-target="50" data-suffix="+">0</div>
+                            <div id="stat2Label" class="text-sm text-gray-500">Artists & DJs</div>
+                        </div>
+                        <div class="w-px h-12 bg-white/10"></div>
+                        <div>
+                            <div class="text-3xl font-bold text-gradient counter" data-target="15" data-suffix="+">0</div>
+                            <div id="stat3Label" class="text-sm text-gray-500">Cities in India</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden lg:block relative">
+                    <div class="relative w-full aspect-square">
+                        <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-brand-600/20 to-purple-600/20 border border-white/10 backdrop-blur-sm"></div>
+                        <div class="absolute inset-8 rounded-2xl bg-gradient-to-br from-orange-500/20 via-brand-500/30 to-pink-500/30 border border-white/10 flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="relative inline-block">
+                                    <div class="w-32 h-32 rounded-full bg-gradient-to-br from-orange-500 via-brand-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
+                                        <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                                        </svg>
+                                    </div>
+                                    <div class="absolute -inset-4 rounded-full border border-brand-500/30 pulse-ring"></div>
+                                    <div class="absolute -inset-8 rounded-full border border-purple-500/20 pulse-ring" style="animation-delay: 0.5s;"></div>
+                                </div>
+                                <p id="nextEventLabel" class="text-xl font-display font-bold mt-4">Next Event</p>
+                                <p id="nextEventName" class="text-brand-300 text-sm mt-1">DIWALI NIGHTS — 12 Nov</p>
+                            </div>
+                        </div>
+                        <div id="floatBadge1" class="absolute -top-4 -right-4 px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-sm animate-bounce" style="animation-duration: 3s;">🪔 Diwali Special</div>
+                        <div id="floatBadge2" class="absolute -bottom-4 -left-4 px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-sm animate-bounce" style="animation-duration: 3.5s;">💍 Shaadi Season</div>
+                        <div id="floatBadge3" class="absolute top-1/2 -right-8 px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-sm animate-bounce" style="animation-duration: 4s;">🎬 Bollywood Live</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+            <span class="text-xs text-gray-500">Scroll</span>
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Marquee -->
+    <div class="bg-gradient-to-r from-orange-500 via-brand-600 to-pink-600 py-4 overflow-hidden">
+        <div id="marqueeContent" class="marquee whitespace-nowrap flex items-center gap-8"></div>
+    </div>
+
+    <!-- Services Section -->
+    <section id="services" class="py-24 relative rangoli-bg">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-400 text-sm font-semibold tracking-widest uppercase">What We Offer</span>
+                <h2 class="text-4xl md:text-6xl font-display font-bold mt-3">Our <span class="text-gradient">Services</span></h2>
+                <p id="servicesSubtitle" class="text-gray-400 mt-4 max-w-2xl mx-auto">From concept to celebration, we handle every detail — so you can enjoy the moment with your loved ones.</p>
+            </div>
+            <div id="servicesGrid" class="grid md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </div>
+    </section>
+
+    <!-- Upcoming Events -->
+    <section id="events" class="py-24 relative bg-gradient-to-b from-transparent via-brand-900/10 to-transparent">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-400 text-sm font-semibold tracking-widest uppercase">Don't Miss Out</span>
+                <h2 class="text-4xl md:text-6xl font-display font-bold mt-3">Upcoming <span class="text-gradient">Events</span></h2>
+                <p id="eventsSubtitle" class="text-gray-400 mt-4 max-w-2xl mx-auto">Book your tickets for India's most unforgettable experiences.</p>
+            </div>
+            <div id="eventsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-400 text-sm font-semibold tracking-widest uppercase">Our Portfolio</span>
+                <h2 class="text-4xl md:text-6xl font-display font-bold mt-3">Event <span class="text-gradient">Gallery</span></h2>
+                <p id="gallerySubtitle" class="text-gray-400 mt-4 max-w-2xl mx-auto">A glimpse into the magical moments we've created for our clients across India.</p>
+            </div>
+            <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="py-24 relative bg-gradient-to-b from-transparent via-brand-900/10 to-transparent">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-400 text-sm font-semibold tracking-widest uppercase">Testimonials</span>
+                <h2 class="text-4xl md:text-6xl font-display font-bold mt-3">What Clients <span class="text-gradient">Say</span></h2>
+            </div>
+            <div id="testimonialsGrid" class="grid md:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <!-- Contact / Booking Section -->
+    <section id="contact" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <span class="text-brand-400 text-sm font-semibold tracking-widest uppercase">Get In Touch</span>
+                    <h2 id="contactTitle" class="text-4xl md:text-6xl font-display font-bold mt-3">Let's Create <br><span class="text-gradient">Something Amazing</span></h2>
+                    <p id="contactDesc" class="text-gray-400 mt-6 leading-relaxed">Ready to bring your vision to life? Fill out the form and our team will get back to you within 24 hours with a custom proposal.</p>
+
+                    <div class="mt-10 space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-brand-600/20 flex items-center justify-center shrink-0">
+                                <svg class="w-6 h-6 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">Email Us</div>
+                                <div id="contactEmail" class="font-semibold">hello@luminaevents.in</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-brand-600/20 flex items-center justify-center shrink-0">
+                                <svg class="w-6 h-6 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">Call Us</div>
+                                <div id="contactPhone" class="font-semibold">+91 98765 43210</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-brand-600/20 flex items-center justify-center shrink-0">
+                                <svg class="w-6 h-6 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">Visit Us</div>
+                                <div id="contactAddress" class="font-semibold">Bandra Kurla Complex, Mumbai — 400051</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 mt-10">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-600 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-600 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-600 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="reveal" style="transition-delay: 0.2s;">
+                    <form id="contactForm" class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="text-sm text-gray-400 mb-1 block">Full Name *</label>
+                                <input type="text" required class="form-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none transition-all" placeholder="Rahul Verma">
+                            </div>
+                            <div>
+                                <label class="text-sm text-gray-400 mb-1 block">Email *</label>
+                                <input type="email" required class="form-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none transition-all" placeholder="rahul@example.in">
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="text-sm text-gray-400 mb-1 block">Mobile (+91) *</label>
+                                <input type="tel" required pattern="[0-9]{10}" class="form-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none transition-all" placeholder="98765 43210">
+                            </div>
+                            <div>
+                                <label class="text-sm text-gray-400 mb-1 block">Event Type *</label>
+                                <select required class="form-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none transition-all appearance-none">
+                                    <option value="" class="bg-[#1a1744]">Select type...</option>
+                                    <option value="wedding" class="bg-[#1a1744]">Indian Wedding (Shaadi)</option>
+                                    <option value="sangeet" class="bg-[#1a1744]">Sangeet / Mehendi</option>
+                                    <option value="corporate" class="bg-[#1a1744]">Corporate Event</option>
+                                    <option value="concert" class="bg-[#1a1744]">Bollywood Concert</option>
+                                    <option value="festival" class="bg-[#1a1744]">Festival (Diwali/Holi/Navratri)</option>
+                                    <option value="birthday" class="bg-[#1a1744]">Birthday Party</option>
+                                    <option value="other" class="bg-[#1a1744]">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label class="text-sm text-gray-400 mb-1 block">Event Date</label>
+                                <input type="date" class="form-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="text-sm text-gray-400 mb-1 block">City</label>
+                                <select class="form-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none transition-all appearance-none">
+                                    <option value="" class="bg-[#1a1744]">Select city...</option>
+                                    <option class="bg-[#1a1744]">Mumbai</option><option class="bg-[#1a1744]">Delhi NCR</option>
+                                    <option class="bg-[#1a1744]">Bangalore</option><option class="bg-[#1a1744]">Hyderabad</option>
+                                    <option class="bg-[#1a1744]">Chennai</option><option class="bg-[#1a1744]">Kolkata</option>
+                                    <option class="bg-[#1a1744]">Pune</option><option class="bg-[#1a1744]">Ahmedabad</option>
+                                    <option class="bg-[#1a1744]">Jaipur</option><option class="bg-[#1a1744]">Goa</option>
+                                    <option class="bg-[#1a1744]">Udaipur</option><option class="bg-[#1a1744]">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-sm text-gray-400 mb-1 block">Budget (₹)</label>
+                                <select class="form-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none transition-all appearance-none">
+                                    <option value="" class="bg-[#1a1744]">Select budget...</option>
+                                    <option class="bg-[#1a1744]">₹1 Lakh – ₹5 Lakh</option>
+                                    <option class="bg-[#1a1744]">₹5 Lakh – ₹15 Lakh</option>
+                                    <option class="bg-[#1a1744]">₹15 Lakh – ₹50 Lakh</option>
+                                    <option class="bg-[#1a1744]">₹50 Lakh – ₹1 Crore</option>
+                                    <option class="bg-[#1a1744]">₹1 Crore+</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label class="text-sm text-gray-400 mb-1 block">Tell Us About Your Event</label>
+                            <textarea rows="4" class="form-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none transition-all resize-none" placeholder="Describe your vision, theme, number of guests, special requirements..."></textarea>
+                        </div>
+                        <button type="submit" class="glow-btn w-full py-4 bg-brand-600 rounded-xl font-semibold text-lg flex items-center justify-center gap-2">
+                            Send Inquiry
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                        </button>
+                        <div id="formSuccess" class="hidden mt-4 p-4 bg-green-500/20 border border-green-500/30 rounded-xl text-green-400 text-center">
+                            ✓ Dhanyavaad! We'll get back to you within 24 hours.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div class="md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 via-brand-500 to-purple-600 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                            </svg>
+                        </div>
+                        <span id="footerBrand" class="text-2xl font-display font-bold">LUMINA</span>
+                    </div>
+                    <p id="footerAbout" class="text-gray-400 text-sm leading-relaxed">Creating extraordinary events and entertainment experiences across India since 2018. Your vision, our expertise.</p>
+                    <p id="footerGstin" class="text-xs text-gray-500 mt-4">GSTIN: 27AABCL1234F1Z5</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Services</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Indian Weddings</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Sangeet & Mehendi</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Corporate Events</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Bollywood Concerts</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Festival Celebrations</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Cities We Serve</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Mumbai • Delhi • Bangalore</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Hyderabad • Chennai</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Pune • Kolkata</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Ahmedabad • Jaipur</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Goa • Udaipur</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Newsletter</h4>
+                    <p class="text-sm text-gray-400 mb-4">Get updates on upcoming events and exclusive offers.</p>
+                    <form class="flex gap-2" onsubmit="event.preventDefault(); this.querySelector('input').value=''; showToast('Subscribed! Dhanyavaad 🙏');">
+                        <input type="email" placeholder="Your email" class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+                        <button class="px-4 py-2 bg-brand-600 rounded-lg text-sm font-semibold hover:bg-brand-500 transition-colors">→</button>
+                    </form>
+                    <p class="text-xs text-gray-500 mt-4">📞 <span id="footerPhone">+91 98765 43210</span><br>📧 <span id="footerEmail">hello@luminaevents.in</span></p>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p id="footerCopyright" class="text-sm text-gray-500">© 2026 LUMINA Events & Entertainment Pvt. Ltd. | CIN: U74999MH2018PTC123456</p>
+                <div class="flex gap-6 text-sm text-gray-500">
+                    <a href="#" class="hover:text-brand-400 transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-brand-400 transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-brand-400 transition-colors">Refund Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Admin Trigger Button -->
+    <button id="adminTrigger" class="admin-trigger" title="Admin Login (Ctrl+Shift+A)">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+    </button>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginOverlay" class="admin-overlay">
+        <div class="bg-[#12102e] rounded-2xl p-8 border border-white/10 w-full max-w-md mx-4 relative">
+            <button id="closeLoginModal" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+                <h2 class="text-2xl font-display font-bold">Admin Login</h2>
+                <p class="text-gray-400 text-sm mt-2">Enter your credentials to manage the website</p>
+            </div>
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label class="text-sm text-gray-400 mb-2 block">Username</label>
+                    <input type="text" id="loginUsername" required class="form-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none transition-all" placeholder="admin">
+                </div>
+                <div class="mb-4">
+                    <label class="text-sm text-gray-400 mb-2 block">Password</label>
+                    <input type="password" id="loginPassword" required class="form-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none transition-all" placeholder="••••••••">
+                </div>
+                <div id="loginError" class="hidden mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm text-center">Invalid credentials. Please try again.</div>
+                <button type="submit" class="glow-btn w-full py-3 bg-brand-600 rounded-xl font-semibold flex items-center justify-center gap-2">
+                    Login to Dashboard
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </button>
+                <div class="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-xs text-blue-300 text-center">
+                    <strong>Demo Credentials:</strong><br>Username: <code class="bg-white/10 px-1.5 py-0.5 rounded">admin</code> | Password: <code class="bg-white/10 px-1.5 py-0.5 rounded">admin123</code>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Panel -->
+    <div id="adminPanel" class="admin-panel">
+        <aside class="admin-sidebar">
+            <div class="p-6 border-b border-white/10">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </div>
+                    <div>
+                        <div class="font-bold text-sm">Admin Panel</div>
+                        <div class="text-xs text-gray-500">LUMINA CMS</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-gray-400">
+                    <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+                    Logged in as <strong class="text-white">admin</strong>
+                </div>
+            </div>
+            <nav class="flex-1 py-4">
+                <div class="px-4 py-2 text-xs text-gray-500 uppercase tracking-wider font-semibold">Content</div>
+                <div class="admin-tab active" data-tab="hero">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    Hero Section
+                </div>
+                <div class="admin-tab" data-tab="services">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    Services
+                </div>
+                <div class="admin-tab" data-tab="events">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    Events & Media
+                </div>
+                <div class="admin-tab" data-tab="gallery">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    Gallery
+                </div>
+                <div class="admin-tab" data-tab="testimonials">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    Testimonials
+                </div>
+                <div class="admin-tab" data-tab="contact">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    Contact Info
+                </div>
+                <div class="admin-tab" data-tab="marquee">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                    Marquee Text
+                </div>
+                <div class="admin-tab" data-tab="footer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    Footer
+                </div>
+                <div class="px-4 py-2 text-xs text-gray-500 uppercase tracking-wider font-semibold mt-4">System</div>
+                <div class="admin-tab" data-tab="settings">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                    Settings
+                </div>
+            </nav>
+            <div class="p-4 border-t border-white/10 space-y-2">
+                <button id="logoutBtn" class="w-full py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    Logout
+                </button>
+                <button id="closeAdminBtn" class="w-full py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm font-semibold transition-colors">
+                    ← Back to Site
+                </button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <div class="max-w-4xl">
+                <div class="mb-8 flex items-center justify-between">
+                    <div>
+                        <h1 id="adminPageTitle" class="text-3xl font-display font-bold">Hero Section</h1>
+                        <p id="adminPageDesc" class="text-gray-400 text-sm mt-1">Edit the main hero content displayed at the top of the page</p>
+                    </div>
+                    <button id="saveChangesBtn" class="glow-btn px-6 py-2.5 bg-brand-600 rounded-lg font-semibold text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Save Changes
+                    </button>
+                </div>
+                <div id="adminContent"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ============ DEFAULT DATA ============
+        const DEFAULT_DATA = {
+            brand: { name: 'LUMINA' },
+            hero: {
+                badge: 'Now Booking Shaadi Season 2026–27',
+                titleLine1: 'Jashn', titleLine2: 'Zindagi', titleLine3: 'Ka',
+                description: 'Premium event planning and entertainment across India. From grand Indian weddings and Sangeet nights to Bollywood concerts and corporate galas — we turn every celebration into an unforgettable spectacle.',
+                cta1: 'Plan Your Event', cta2: 'Watch Showreel',
+                stat1Value: 500, stat1Label: 'Events Hosted',
+                stat2Value: 50, stat2Label: 'Artists & DJs',
+                stat3Value: 15, stat3Label: 'Cities in India',
+                nextEventLabel: 'Next Event', nextEventName: 'DIWALI NIGHTS — 12 Nov',
+                floatBadge1: '🪔 Diwali Special', floatBadge2: '💍 Shaadi Season', floatBadge3: '🎬 Bollywood Live'
+            },
+            marquee: { items: ['INDIAN WEDDINGS', 'SANGEET NIGHTS', 'MEHENDI CEREMONIES', 'BOLLYWOOD CONCERTS', 'DIWALI GALAS', 'HOLI FESTIVALS', 'CORPORATE EVENTS', 'NAVRATRI NIGHTS'] },
+            services: {
+                subtitle: 'From concept to celebration, we handle every detail — so you can enjoy the moment with your loved ones.',
+                items: [
+                    { title: 'Indian Weddings', desc: 'Grand shaadis with Mehendi, Sangeet, Haldi & Baraat. Traditional to modern — we craft it all.', price: 'Starting ₹5,00,000', icon: '❤️', gradient: 'from-orange-500 to-rose-600', image: '' },
+                    { title: 'Corporate Events', desc: 'Annual days, product launches, conferences & award nights across Mumbai, Delhi, Bangalore & more.', price: 'Starting ₹2,50,000', icon: '🏢', gradient: 'from-violet-500 to-purple-600', image: '' },
+                    { title: 'Bollywood Nights', desc: 'Live concerts with top playback singers, DJs, and full production — sound, lighting & artist management.', price: 'Starting ₹3,00,000', icon: '🎤', gradient: 'from-brand-500 to-fuchsia-600', image: '' },
+                    { title: 'Festivals & Parties', desc: 'Diwali, Holi, Navratri, New Year — themed celebrations with dhol, dancers, and desi beats.', price: 'Starting ₹1,50,000', icon: '🎉', gradient: 'from-amber-500 to-orange-600', image: '' }
+                ]
+            },
+            events: {
+                subtitle: "Book your tickets for India's most unforgettable experiences.",
+                items: [
+                    { title: 'Diwali Nights 2026', location: 'Jio World Garden, Mumbai', desc: 'Celebrate the festival of lights with live ghazals, DJ nights, fireworks, and a grand Indian thali dinner.', price: '₹3,500', date: '12 NOV', badge: 'SELLING FAST', badgeColor: 'bg-red-500', emoji: '🪔', gradient: 'from-orange-500 via-brand-600 to-pink-600', subtitle: 'DIWALI NIGHTS', image: '', video: '' },
+                    { title: 'Bollywood Christmas Bash', location: 'Jawaharlal Nehru Stadium, Delhi', desc: 'Top playback singers, choreographed dance acts, and a night of timeless Bollywood magic under the Delhi sky.', price: '₹2,500', date: '25 DEC', badge: 'AVAILABLE', badgeColor: 'bg-green-500', emoji: '🎬', gradient: 'from-violet-600 via-indigo-600 to-blue-600', subtitle: 'BOLLYWOOD LIVE', image: '', video: '' },
+                    { title: 'Maha Navratri Garba Night', location: 'GM Ground, Ahmedabad', desc: 'Nine nights of garba & dandiya with traditional folk artists, chaniya choli parade, and authentic Gujarati feast.', price: '₹1,800', date: '02 OCT', badge: 'VIP NIGHT', badgeColor: 'bg-amber-500', emoji: '💃', gradient: 'from-rose-600 via-pink-600 to-fuchsia-600', subtitle: 'NAVRATRI SPECIAL', image: '', video: '' }
+                ]
+            },
+            gallery: {
+                subtitle: "A glimpse into the magical moments we've created for our clients across India.",
+                items: [
+                    { title: 'Punjabi Wedding', emoji: '💍', gradient: 'from-red-600 to-orange-800', span: false, image: '' },
+                    { title: 'Arijit Singh Live', emoji: '🎤', gradient: 'from-purple-600 to-indigo-800', span: true, image: '' },
+                    { title: 'TCS Annual Day', emoji: '🏢', gradient: 'from-amber-600 to-orange-800', span: false, image: '' },
+                    { title: 'Birthday Bash', emoji: '🎂', gradient: 'from-pink-500 to-rose-800', span: false, image: '' },
+                    { title: 'Holi Festival', emoji: '🎨', gradient: 'from-yellow-500 via-pink-500 to-purple-600', span: false, image: '' },
+                    { title: 'Garba Night', emoji: '💃', gradient: 'from-brand-600 to-fuchsia-800', span: false, image: '' },
+                    { title: 'Diwali Gala', emoji: '🪔', gradient: 'from-orange-500 to-red-800', span: false, image: '' }
+                ]
+            },
+            testimonials: [
+                { name: 'Priya & Rohan Sharma', initials: 'PS', role: 'Wedding — Udaipur, June 2026', text: 'Hamari shaadi ko LUMINA ne bilkul fairy tale bana diya! Mehendi se lekar baraat tak — har detail perfect thi. Mehman aaj bhi baat karte hain!', gradient: 'from-pink-500 to-rose-600', avatar: '' },
+                { name: 'Arjun Mehta', initials: 'AM', role: 'HR Head, Infosys Ltd.', text: 'Our annual day at Infosys was taken to a whole new level. 2000+ employees, flawless execution. The LUMINA team is professional, creative, and truly world-class.', gradient: 'from-violet-500 to-purple-600', avatar: '' },
+                { name: 'Ananya Iyer', initials: 'AI', role: 'Birthday — Chennai, Aug 2026', text: 'Meri 30th birthday bilkul magical thi! Theme, decoration, dhol-wale, dancers — sab kuchh mere sapno se bhi zyada. Thank you LUMINA team!', gradient: 'from-amber-500 to-orange-600', avatar: '' }
+            ],
+            contact: {
+                title: "Let's Create <br><span class='text-gradient'>Something Amazing</span>",
+                description: 'Ready to bring your vision to life? Fill out the form and our team will get back to you within 24 hours with a custom proposal.',
+                email: 'hello@luminaevents.in', phone: '+91 98765 43210',
+                address: 'Bandra Kurla Complex, Mumbai — 400051'
+            },
+            footer: {
+                about: 'Creating extraordinary events and entertainment experiences across India since 2018. Your vision, our expertise.',
+                gstin: 'GSTIN: 27AABCL1234F1Z5',
+                copyright: '© 2026 LUMINA Events & Entertainment Pvt. Ltd. | CIN: U74999MH2018PTC123456'
+            }
+        };
+
+        // ============ DATA MANAGEMENT ============
+        const STORAGE_KEY = 'lumina_site_data_v2';
+        const AUTH_KEY = 'lumina_admin_auth';
+
+        function loadData() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try { return JSON.parse(stored); } catch(e) { return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+            }
+            return JSON.parse(JSON.stringify(DEFAULT_DATA));
+        }
+
+        function saveData(data) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                return true;
+            } catch (e) {
+                showToast('Storage full! Try smaller images or videos.', 'error');
+                return false;
+            }
+        }
+
+        let siteData = loadData();
+
+        // ============ MEDIA UPLOAD HELPERS ============
+        const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
+        const MAX_VIDEO_SIZE = 10 * 1024 * 1024; // 10MB
+        const IMAGE_QUALITY = 0.7;
+
+        function compressImage(file, maxSize = 1200) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxSize || height > maxSize) {
+                            if (width > height) {
+                                height = (height / width) * maxSize;
+                                width = maxSize;
+                            } else {
+                                width = (width / height) * maxSize;
+                                height = maxSize;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const dataUrl = canvas.toDataURL('image/jpeg', IMAGE_QUALITY);
+                        resolve(dataUrl);
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function fileToDataUrl(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        function createMediaUploader(id, currentData, type = 'image', label = 'Upload Image') {
+            const isImage = type === 'image';
+            const accept = isImage ? 'image/*' : 'video/*';
+            const maxSize = isImage ? MAX_IMAGE_SIZE : MAX_VIDEO_SIZE;
+            const icon = isImage
+                ? '<svg class="w-10 h-10 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>'
+                : '<svg class="w-10 h-10 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>';
+
+            const hasFile = currentData && currentData.length > 0;
+            const previewContent = hasFile
+                ? (isImage
+                    ? `<img src="${currentData}" alt="Preview">`
+                    : `<video src="${currentData}" controls></video>`)
+                : '';
+
+            return `
+                <div class="media-upload ${hasFile ? 'has-file' : ''}" id="upload-${id}" data-type="${type}" data-max-size="${maxSize}">
+                    <input type="file" id="file-${id}" accept="${accept}" data-target="${id}">
+                    ${hasFile ? `
+                        <div class="media-preview">
+                            ${previewContent}
+                            <button type="button" class="media-remove" data-target="${id}" title="Remove">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                            <div class="media-info">
+                                <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <span class="text-green-400">File uploaded • Click to replace</span>
+                            </div>
+                        </div>
+                    ` : `
+                        ${icon}
+                        <p class="text-sm text-gray-400 mb-1">${label}</p>
+                        <p class="text-xs text-gray-500">Drag & drop or click to browse</p>
+                        <p class="text-xs text-gray-600 mt-2">${isImage ? 'JPG, PNG, WebP • Max 2MB' : 'MP4, WebM • Max 10MB'}</p>
+                        <div class="upload-progress" style="display:none;"><div class="upload-progress-bar"></div></div>
+                    `}
+                </div>
+            `;
+        }
+
+        function initMediaUploads() {
+            document.querySelectorAll('.media-upload').forEach(upload => {
+                const input = upload.querySelector('input[type="file"]');
+                const type = upload.dataset.type;
+                const maxSize = parseInt(upload.dataset.maxSize);
+
+                // Click to open file dialog
+                upload.addEventListener('click', (e) => {
+                    if (e.target.closest('.media-remove')) return;
+                    input.click();
+                });
+
+                // Drag & drop
+                upload.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    upload.classList.add('dragover');
+                });
+                upload.addEventListener('dragleave', () => upload.classList.remove('dragover'));
+                upload.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    upload.classList.remove('dragover');
+                    if (e.dataTransfer.files.length > 0) {
+                        handleFile(e.dataTransfer.files[0], upload, input.dataset.target, type, maxSize);
+                    }
+                });
+
+                // File input change
+                input.addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) {
+                        handleFile(e.target.files[0], upload, input.dataset.target, type, maxSize);
+                    }
+                });
+            });
+
+            // Remove buttons
+            document.querySelectorAll('.media-remove').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const target = btn.dataset.target;
+                    setNestedValue(siteData, target, '');
+                    // Re-render the current tab
+                    const activeTab = document.querySelector('.admin-tab.active').dataset.tab;
+                    switchTab(activeTab);
+                    showToast('Media removed');
+                });
+            });
+        }
+
+        async function handleFile(file, uploadEl, targetPath, type, maxSize) {
+            if (file.size > maxSize) {
+                showToast(`File too large! Max ${formatFileSize(maxSize)}`, 'error');
+                return;
+            }
+
+            const progressEl = uploadEl.querySelector('.upload-progress');
+            const progressBar = uploadEl.querySelector('.upload-progress-bar');
+            if (progressEl) {
+                progressEl.style.display = 'block';
+                progressBar.style.width = '30%';
+            }
+
+            try {
+                let dataUrl;
+                if (type === 'image') {
+                    progressBar.style.width = '60%';
+                    dataUrl = await compressImage(file);
+                } else {
+                    progressBar.style.width = '60%';
+                    dataUrl = await fileToDataUrl(file);
+                }
+                progressBar.style.width = '100%';
+
+                setNestedValue(siteData, targetPath, dataUrl);
+
+                // Re-render the uploader
+                const activeTab = document.querySelector('.admin-tab.active').dataset.tab;
+                setTimeout(() => {
+                    switchTab(activeTab);
+                    showToast(`${type === 'image' ? 'Image' : 'Video'} uploaded successfully! 📸`);
+                }, 300);
+            } catch (err) {
+                showToast('Failed to process file', 'error');
+                if (progressEl) progressEl.style.display = 'none';
+            }
+        }
+
+        // ============ RENDER FUNCTIONS ============
+        function renderAll() {
+            document.getElementById('brandName').textContent = siteData.brand.name;
+            document.getElementById('footerBrand').textContent = siteData.brand.name;
+
+            document.getElementById('heroBadge').textContent = siteData.hero.badge;
+            document.getElementById('heroTitle').innerHTML = `${siteData.hero.titleLine1} <br><span class="text-gradient">${siteData.hero.titleLine2}</span><br>${siteData.hero.titleLine3}`;
+            document.getElementById('heroDesc').textContent = siteData.hero.description;
+            document.getElementById('heroCta1').textContent = siteData.hero.cta1;
+            document.getElementById('heroCta2').textContent = siteData.hero.cta2;
+
+            const counters = document.querySelectorAll('.counter');
+            if (counters[0]) { counters[0].dataset.target = siteData.hero.stat1Value; counters[0].textContent = siteData.hero.stat1Value + '+'; }
+            if (counters[1]) { counters[1].dataset.target = siteData.hero.stat2Value; counters[1].textContent = siteData.hero.stat2Value + '+'; }
+            if (counters[2]) { counters[2].dataset.target = siteData.hero.stat3Value; counters[2].textContent = siteData.hero.stat3Value + '+'; }
+            document.getElementById('stat1Label').textContent = siteData.hero.stat1Label;
+            document.getElementById('stat2Label').textContent = siteData.hero.stat2Label;
+            document.getElementById('stat3Label').textContent = siteData.hero.stat3Label;
+
+            document.getElementById('nextEventLabel').textContent = siteData.hero.nextEventLabel;
+            document.getElementById('nextEventName').textContent = siteData.hero.nextEventName;
+            document.getElementById('floatBadge1').textContent = siteData.hero.floatBadge1;
+            document.getElementById('floatBadge2').textContent = siteData.hero.floatBadge2;
+            document.getElementById('floatBadge3').textContent = siteData.hero.floatBadge3;
+
+            const marquee = document.getElementById('marqueeContent');
+            const items = siteData.marquee.items.map(i => `<span class="text-lg font-bold mx-4">★ ${i}</span>`).join('');
+            marquee.innerHTML = items + items;
+
+            document.getElementById('servicesSubtitle').textContent = siteData.services.subtitle;
+            const servicesGrid = document.getElementById('servicesGrid');
+            servicesGrid.innerHTML = siteData.services.items.map((s, i) => {
+                const iconContent = s.image
+                    ? `<img src="${s.image}" alt="${s.title}" class="real-image-img rounded-lg">`
+                    : `<div class="w-14 h-14 rounded-xl bg-gradient-to-br ${s.gradient} flex items-center justify-center text-2xl">${s.icon}</div>`;
+                return `
+                    <div class="service-card bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 reveal" style="transition-delay: ${i * 0.1}s;">
+                        ${iconContent}
+                        <h3 class="text-xl font-bold mb-3 mt-4">${s.title}</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">${s.desc}</p>
+                        <p class="text-xs text-brand-400 mt-3">${s.price}</p>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('eventsSubtitle').textContent = siteData.events.subtitle;
+            const eventsGrid = document.getElementById('eventsGrid');
+            eventsGrid.innerHTML = siteData.events.items.map((e, i) => {
+                const heroContent = e.image
+                    ? `<img src="${e.image}" alt="${e.title}" class="real-image-img event-img">`
+                    : `<div class="event-img absolute inset-0 flex items-center justify-center bg-gradient-to-br ${e.gradient}">
+                         <div class="text-center">
+                            <div class="text-5xl mb-2">${e.emoji}</div>
+                            <div class="text-sm font-bold opacity-80">${e.subtitle}</div>
+                         </div>
+                       </div>`;
+                return `
+                    <div class="event-card bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden reveal" style="transition-delay: ${i * 0.1}s;">
+                        <div class="h-48 relative overflow-hidden">
+                            ${heroContent}
+                            <div class="absolute top-4 left-4 px-3 py-1 ${e.badgeColor} rounded-full text-xs font-bold z-10">${e.badge}</div>
+                            <div class="absolute top-4 right-4 px-3 py-1 bg-black/40 backdrop-blur-sm rounded-full text-xs font-bold z-10">${e.date}</div>
+                            ${e.video ? `<button class="absolute bottom-4 right-4 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center z-10 hover:scale-110 transition-transform" onclick="playEventVideo(${i})">
+                                <svg class="w-5 h-5 text-gray-900 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </button>` : ''}
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 text-brand-400 text-sm mb-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                                ${e.location}
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">${e.title}</h3>
+                            <p class="text-gray-400 text-sm mb-4">${e.desc}</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-bold text-gradient">${e.price}</span>
+                                <button class="px-5 py-2 bg-brand-600 hover:bg-brand-500 rounded-full text-sm font-semibold transition-colors">Book Tickets</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('gallerySubtitle').textContent = siteData.gallery.subtitle;
+            const galleryGrid = document.getElementById('galleryGrid');
+            galleryGrid.innerHTML = siteData.gallery.items.map((g, i) => {
+                const content = g.image
+                    ? `<img src="${g.image}" alt="${g.title}" class="real-image-img">`
+                    : `<div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br ${g.gradient}">
+                         <div class="text-center">
+                            <div class="text-4xl mb-2">${g.emoji}</div>
+                            <p class="text-sm font-bold">${g.title}</p>
+                         </div>
+                       </div>`;
+                return `
+                    <div class="gallery-item rounded-2xl aspect-square ${g.span ? 'md:row-span-2' : ''} relative cursor-pointer reveal overflow-hidden" style="transition-delay: ${i * 0.05}s;">
+                        ${content}
+                        <div class="gallery-overlay absolute inset-0 bg-black/60 flex items-center justify-center rounded-2xl">
+                            <span class="text-sm font-bold">View Details →</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const testimonialsGrid = document.getElementById('testimonialsGrid');
+            const starSvg = `<svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>`;
+            testimonialsGrid.innerHTML = siteData.testimonials.map((t, i) => {
+                const avatarContent = t.avatar
+                    ? `<img src="${t.avatar}" alt="${t.name}" class="w-12 h-12 rounded-full object-cover">`
+                    : `<div class="w-12 h-12 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center font-bold">${t.initials}</div>`;
+                return `
+                    <div class="testimonial-card bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 reveal" style="transition-delay: ${i * 0.1}s;">
+                        <div class="flex gap-1 mb-4">${starSvg.repeat(5)}</div>
+                        <p class="text-gray-300 mb-6 leading-relaxed">"${t.text}"</p>
+                        <div class="flex items-center gap-3">
+                            ${avatarContent}
+                            <div>
+                                <div class="font-semibold">${t.name}</div>
+                                <div class="text-sm text-gray-500">${t.role}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('contactTitle').innerHTML = siteData.contact.title;
+            document.getElementById('contactDesc').textContent = siteData.contact.description;
+            document.getElementById('contactEmail').textContent = siteData.contact.email;
+            document.getElementById('contactPhone').textContent = siteData.contact.phone;
+            document.getElementById('contactAddress').textContent = siteData.contact.address;
+
+            document.getElementById('footerAbout').textContent = siteData.footer.about;
+            document.getElementById('footerGstin').textContent = siteData.footer.gstin;
+            document.getElementById('footerCopyright').textContent = siteData.footer.copyright;
+            document.getElementById('footerPhone').textContent = siteData.contact.phone;
+            document.getElementById('footerEmail').textContent = siteData.contact.email;
+
+            initReveal();
+        }
+
+        // Video playback modal
+        window.playEventVideo = function(index) {
+            const video = siteData.events.items[index].video;
+            if (!video) return;
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;';
+            modal.innerHTML = `
+                <button style="position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.1);color:white;border:none;cursor:pointer;font-size:20px;">✕</button>
+                <video src="${video}" controls autoplay style="max-width:100%;max-height:90vh;border-radius:12px;"></video>
+            `;
+            modal.querySelector('button').addEventListener('click', () => modal.remove());
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+            document.body.appendChild(modal);
+        };
+
+        // ============ TOAST ============
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.style.background = type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #ef4444, #dc2626)';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ============ ADMIN LOGIN ============
+        const ADMIN_USER = 'admin';
+        const ADMIN_PASS = 'admin123';
+
+        document.getElementById('adminTrigger').addEventListener('click', () => {
+            if (localStorage.getItem(AUTH_KEY) === 'true') {
+                openAdminPanel();
+            } else {
+                document.getElementById('adminLoginOverlay').classList.add('active');
+            }
+        });
+
+        document.getElementById('closeLoginModal').addEventListener('click', () => {
+            document.getElementById('adminLoginOverlay').classList.remove('active');
+            document.getElementById('loginError').classList.add('hidden');
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = document.getElementById('loginUsername').value;
+            const pass = document.getElementById('loginPassword').value;
+            if (user === ADMIN_USER && pass === ADMIN_PASS) {
+                localStorage.setItem(AUTH_KEY, 'true');
+                document.getElementById('adminLoginOverlay').classList.remove('active');
+                document.getElementById('loginForm').reset();
+                document.getElementById('loginError').classList.add('hidden');
+                openAdminPanel();
+                showToast('Welcome back, Admin! 🙏');
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                document.getElementById('adminTrigger').click();
+            }
+        });
+
+        // ============ ADMIN PANEL ============
+        function openAdminPanel() {
+            document.getElementById('adminPanel').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            switchTab('hero');
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('closeAdminBtn').addEventListener('click', closeAdminPanel);
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem(AUTH_KEY);
+            closeAdminPanel();
+            showToast('Logged out successfully');
+        });
+
+        document.querySelectorAll('.admin-tab').forEach(tab => {
+            tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+        });
+
+        const TAB_META = {
+            hero: { title: 'Hero Section', desc: 'Edit the main hero content displayed at the top of the page' },
+            services: { title: 'Services', desc: 'Manage your service offerings, descriptions, and images' },
+            events: { title: 'Events & Media', desc: 'Manage events with photos and videos — upload real media for each event' },
+            gallery: { title: 'Gallery', desc: 'Upload real photos for your portfolio gallery' },
+            testimonials: { title: 'Testimonials', desc: 'Manage client reviews with optional avatar photos' },
+            contact: { title: 'Contact Info', desc: 'Update contact details displayed on the site' },
+            marquee: { title: 'Marquee Text', desc: 'Edit the scrolling announcement bar' },
+            footer: { title: 'Footer', desc: 'Manage footer content, GSTIN, and copyright' },
+            settings: { title: 'Settings', desc: 'System settings and data management' }
+        };
+
+        function switchTab(tab) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+            document.getElementById('adminPageTitle').textContent = TAB_META[tab].title;
+            document.getElementById('adminPageDesc').textContent = TAB_META[tab].desc;
+            renderAdminTab(tab);
+        }
+
+        function renderAdminTab(tab) {
+            const container = document.getElementById('adminContent');
+            let html = '';
+
+            if (tab === 'hero') {
+                html = `
+                    <div class="admin-card">
+                        <div class="admin-card-header"><h3 class="font-bold">Brand Name</h3></div>
+                        <div class="admin-field"><label>Brand Name</label><input type="text" data-path="brand.name" value="${escapeHtml(siteData.brand.name)}"></div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card-header"><h3 class="font-bold">Hero Content</h3></div>
+                        <div class="admin-field"><label>Announcement Badge</label><input type="text" data-path="hero.badge" value="${escapeHtml(siteData.hero.badge)}"></div>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="admin-field"><label>Title Line 1</label><input type="text" data-path="hero.titleLine1" value="${escapeHtml(siteData.hero.titleLine1)}"></div>
+                            <div class="admin-field"><label>Title Line 2 (Highlighted)</label><input type="text" data-path="hero.titleLine2" value="${escapeHtml(siteData.hero.titleLine2)}"></div>
+                            <div class="admin-field"><label>Title Line 3</label><input type="text" data-path="hero.titleLine3" value="${escapeHtml(siteData.hero.titleLine3)}"></div>
+                        </div>
+                        <div class="admin-field"><label>Description</label><textarea data-path="hero.description">${escapeHtml(siteData.hero.description)}</textarea></div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="admin-field"><label>Primary CTA Button</label><input type="text" data-path="hero.cta1" value="${escapeHtml(siteData.hero.cta1)}"></div>
+                            <div class="admin-field"><label>Secondary CTA Button</label><input type="text" data-path="hero.cta2" value="${escapeHtml(siteData.hero.cta2)}"></div>
+                        </div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card-header"><h3 class="font-bold">Statistics</h3></div>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="admin-field"><label>Stat 1 Value</label><input type="number" data-path="hero.stat1Value" value="${siteData.hero.stat1Value}"></div>
+                            <div class="admin-field"><label>Stat 1 Label</label><input type="text" data-path="hero.stat1Label" value="${escapeHtml(siteData.hero.stat1Label)}"></div>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="admin-field"><label>Stat 2 Value</label><input type="number" data-path="hero.stat2Value" value="${siteData.hero.stat2Value}"></div>
+                            <div class="admin-field"><label>Stat 2 Label</label><input type="text" data-path="hero.stat2Label" value="${escapeHtml(siteData.hero.stat2Label)}"></div>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="admin-field"><label>Stat 3 Value</label><input type="number" data-path="hero.stat3Value" value="${siteData.hero.stat3Value}"></div>
+                            <div class="admin-field"><label>Stat 3 Label</label><input type="text" data-path="hero.stat3Label" value="${escapeHtml(siteData.hero.stat3Label)}"></div>
+                        </div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card-header"><h3 class="font-bold">Next Event Preview</h3></div>
+                        <div class="admin-field"><label>Label</label><input type="text" data-path="hero.nextEventLabel" value="${escapeHtml(siteData.hero.nextEventLabel)}"></div>
+                        <div class="admin-field"><label>Event Name & Date</label><input type="text" data-path="hero.nextEventName" value="${escapeHtml(siteData.hero.nextEventName)}"></div>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="admin-field"><label>Floating Badge 1</label><input type="text" data-path="hero.floatBadge1" value="${escapeHtml(siteData.hero.floatBadge1)}"></div>
+                            <div class="admin-field"><label>Floating Badge 2</label><input type="text" data-path="hero.floatBadge2" value="${escapeHtml(siteData.hero.floatBadge2)}"></div>
+                            <div class="admin-field"><label>Floating Badge 3</label><input type="text" data-path="hero.floatBadge3" value="${escapeHtml(siteData.hero.floatBadge3)}"></div>
+                        </div>
+                    </div>`;
+            } else if (tab === 'services') {
+                html = `<div class="admin-card"><div class="admin-field"><label>Section Subtitle</label><textarea data-path="services.subtitle">${escapeHtml(siteData.services.subtitle)}</textarea></div></div>`;
+                siteData.services.items.forEach((s, i) => {
+                    html += `
+                        <div class="admin-card">
+                            <div class="admin-card-header"><h3 class="font-bold">Service ${i + 1}</h3></div>
+                            <div class="admin-field">
+                                <label>Service Image (replaces emoji icon)</label>
+                                ${createMediaUploader(`services.items.${i}.image`, s.image, 'image', 'Upload service image')}
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="admin-field"><label>Title</label><input type="text" data-path="services.items.${i}.title" value="${escapeHtml(s.title)}"></div>
+                                <div class="admin-field"><label>Icon (emoji fallback)</label><input type="text" data-path="services.items.${i}.icon" value="${escapeHtml(s.icon)}"></div>
+                            </div>
+                            <div class="admin-field"><label>Description</label><textarea data-path="services.items.${i}.desc">${escapeHtml(s.desc)}</textarea></div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="admin-field"><label>Price Text</label><input type="text" data-path="services.items.${i}.price" value="${escapeHtml(s.price)}"></div>
+                                <div class="admin-field"><label>Gradient</label>
+                                    <select data-path="services.items.${i}.gradient">
+                                        ${['from-orange-500 to-rose-600','from-violet-500 to-purple-600','from-brand-500 to-fuchsia-600','from-amber-500 to-orange-600','from-pink-500 to-rose-600','from-cyan-500 to-blue-600','from-emerald-500 to-teal-600'].map(g => `<option value="${g}" ${g===s.gradient?'selected':''}>${g}</option>`).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            } else if (tab === 'events') {
+                html = `
+                    <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg text-sm text-blue-300 mb-4">
+                        💡 <strong>Tip:</strong> Upload real photos and videos for each event. Images are auto-compressed. Videos play in a modal when clicked on the site.
+                    </div>
+                    <div class="admin-card"><div class="admin-field"><label>Section Subtitle</label><textarea data-path="events.subtitle">${escapeHtml(siteData.events.subtitle)}</textarea></div></div>`;
+                siteData.events.items.forEach((e, i) => {
+                    html += `
+                        <div class="admin-card">
+                            <div class="admin-card-header"><h3 class="font-bold">Event ${i + 1} — Media & Details</h3></div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="admin-field">
+                                    <label>📸 Event Photo (Hero Image)</label>
+                                    ${createMediaUploader(`events.items.${i}.image`, e.image, 'image', 'Upload event photo')}
+                                </div>
+                                <div class="admin-field">
+                                    <label>🎥 Event Video (Optional)</label>
+                                    ${createMediaUploader(`events.items.${i}.video`, e.video, 'video', 'Upload event video')}
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4 mt-4">
+                                <div class="admin-field"><label>Event Title</label><input type="text" data-path="events.items.${i}.title" value="${escapeHtml(e.title)}"></div>
+                                <div class="admin-field"><label>Location</label><input type="text" data-path="events.items.${i}.location" value="${escapeHtml(e.location)}"></div>
+                            </div>
+                            <div class="admin-field"><label>Description</label><textarea data-path="events.items.${i}.desc">${escapeHtml(e.desc)}</textarea></div>
+                            <div class="grid md:grid-cols-4 gap-4">
+                                <div class="admin-field"><label>Price</label><input type="text" data-path="events.items.${i}.price" value="${escapeHtml(e.price)}"></div>
+                                <div class="admin-field"><label>Date</label><input type="text" data-path="events.items.${i}.date" value="${escapeHtml(e.date)}"></div>
+                                <div class="admin-field"><label>Badge Text</label><input type="text" data-path="events.items.${i}.badge" value="${escapeHtml(e.badge)}"></div>
+                                <div class="admin-field"><label>Emoji (fallback)</label><input type="text" data-path="events.items.${i}.emoji" value="${escapeHtml(e.emoji)}"></div>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="admin-field"><label>Subtitle (on image)</label><input type="text" data-path="events.items.${i}.subtitle" value="${escapeHtml(e.subtitle)}"></div>
+                                <div class="admin-field"><label>Badge Color</label>
+                                    <select data-path="events.items.${i}.badgeColor">
+                                        ${['bg-red-500','bg-green-500','bg-amber-500','bg-blue-500','bg-purple-500'].map(c => `<option value="${c}" ${c===e.badgeColor?'selected':''}>${c}</option>`).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="admin-field"><label>Gradient (fallback if no image)</label>
+                                <select data-path="events.items.${i}.gradient">
+                                    ${['from-orange-500 via-brand-600 to-pink-600','from-violet-600 via-indigo-600 to-blue-600','from-rose-600 via-pink-600 to-fuchsia-600','from-emerald-600 via-teal-600 to-cyan-600','from-amber-500 via-orange-500 to-red-600'].map(g => `<option value="${g}" ${g===e.gradient?'selected':''}>${g}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>`;
+                });
+            } else if (tab === 'gallery') {
+                html = `
+                    <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg text-sm text-blue-300 mb-4">
+                        💡 <strong>Tip:</strong> Upload real photos for each gallery item. If no photo is uploaded, the emoji + gradient will be shown as fallback.
+                    </div>
+                    <div class="admin-card"><div class="admin-field"><label>Section Subtitle</label><textarea data-path="gallery.subtitle">${escapeHtml(siteData.gallery.subtitle)}</textarea></div></div>`;
+                siteData.gallery.items.forEach((g, i) => {
+                    html += `
+                        <div class="admin-card">
+                            <div class="admin-card-header"><h3 class="font-bold">Gallery Item ${i + 1}</h3></div>
+                            <div class="admin-field">
+                                <label>📸 Gallery Photo</label>
+                                ${createMediaUploader(`gallery.items.${i}.image`, g.image, 'image', 'Upload gallery photo')}
+                            </div>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="admin-field"><label>Title</label><input type="text" data-path="gallery.items.${i}.title" value="${escapeHtml(g.title)}"></div>
+                                <div class="admin-field"><label>Emoji (fallback)</label><input type="text" data-path="gallery.items.${i}.emoji" value="${escapeHtml(g.emoji)}"></div>
+                                <div class="admin-field"><label>Span 2 Rows?</label>
+                                    <select data-path="gallery.items.${i}.span">
+                                        <option value="false" ${!g.span?'selected':''}>No</option>
+                                        <option value="true" ${g.span?'selected':''}>Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="admin-field"><label>Gradient (fallback)</label>
+                                <select data-path="gallery.items.${i}.gradient">
+                                    ${['from-red-600 to-orange-800','from-purple-600 to-indigo-800','from-amber-600 to-orange-800','from-pink-500 to-rose-800','from-yellow-500 via-pink-500 to-purple-600','from-brand-600 to-fuchsia-800','from-orange-500 to-red-800','from-cyan-500 to-blue-800','from-emerald-500 to-teal-800'].map(gr => `<option value="${gr}" ${gr===g.gradient?'selected':''}>${gr}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>`;
+                });
+            } else if (tab === 'testimonials') {
+                siteData.testimonials.forEach((t, i) => {
+                    html += `
+                        <div class="admin-card">
+                            <div class="admin-card-header"><h3 class="font-bold">Testimonial ${i + 1}</h3></div>
+                            <div class="admin-field">
+                                <label>👤 Avatar Photo (optional — replaces initials)</label>
+                                ${createMediaUploader(`testimonials.${i}.avatar`, t.avatar, 'image', 'Upload avatar photo')}
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="admin-field"><label>Name</label><input type="text" data-path="testimonials.${i}.name" value="${escapeHtml(t.name)}"></div>
+                                <div class="admin-field"><label>Initials (fallback)</label><input type="text" maxlength="2" data-path="testimonials.${i}.initials" value="${escapeHtml(t.initials)}"></div>
+                            </div>
+                            <div class="admin-field"><label>Role / Context</label><input type="text" data-path="testimonials.${i}.role" value="${escapeHtml(t.role)}"></div>
+                            <div class="admin-field"><label>Review Text</label><textarea data-path="testimonials.${i}.text">${escapeHtml(t.text)}</textarea></div>
+                            <div class="admin-field"><label>Avatar Gradient (fallback)</label>
+                                <select data-path="testimonials.${i}.gradient">
+                                    ${['from-pink-500 to-rose-600','from-violet-500 to-purple-600','from-amber-500 to-orange-600','from-cyan-500 to-blue-600','from-emerald-500 to-teal-600'].map(g => `<option value="${g}" ${g===t.gradient?'selected':''}>${g}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>`;
+                });
+            } else if (tab === 'contact') {
+                html = `
+                    <div class="admin-card">
+                        <div class="admin-card-header"><h3 class="font-bold">Contact Section</h3></div>
+                        <div class="admin-field"><label>Title (supports HTML)</label><input type="text" data-path="contact.title" value="${escapeHtml(siteData.contact.title)}"></div>
+                        <div class="admin-field"><label>Description</label><textarea data-path="contact.description">${escapeHtml(siteData.contact.description)}</textarea></div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="admin-field"><label>Email</label><input type="text" data-path="contact.email" value="${escapeHtml(siteData.contact.email)}"></div>
+                            <div class="admin-field"><label>Phone</label><input type="text" data-path="contact.phone" value="${escapeHtml(siteData.contact.phone)}"></div>
+                        </div>
+                        <div class="admin-field"><label>Address</label><input type="text" data-path="contact.address" value="${escapeHtml(siteData.contact.address)}"></div>
+                    </div>`;
+            } else if (tab === 'marquee') {
+                html = `
+                    <div class="admin-card">
+                        <div class="admin-card-header"><h3 class="font-bold">Marquee Items</h3><p class="text-xs text-gray-500">One item per line</p></div>
+                        <div class="admin-field"><label>Items</label><textarea data-path="marquee.items" data-type="array" rows="10">${siteData.marquee.items.join('\n')}</textarea></div>
+                    </div>`;
+            } else if (tab === 'footer') {
+                html = `
+                    <div class="admin-card">
+                        <div class="admin-card-header"><h3 class="font-bold">Footer Content</h3></div>
+                        <div class="admin-field"><label>About Text</label><textarea data-path="footer.about">${escapeHtml(siteData.footer.about)}</textarea></div>
+                        <div class="admin-field"><label>GSTIN</label><input type="text" data-path="footer.gstin" value="${escapeHtml(siteData.footer.gstin)}"></div>
+                        <div class="admin-field"><label>Copyright Line</label><input type="text" data-path="footer.copyright" value="${escapeHtml(siteData.footer.copyright)}"></div>
+                    </div>`;
+            } else if (tab === 'settings') {
+                const storageUsed = new Blob([JSON.stringify(siteData)]).size;
+                html = `
+                    <div class="admin-card">
+                        <div class="admin-card-header"><h3 class="font-bold">Storage Usage</h3></div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-sm text-gray-400">Current data size</span>
+                            <span class="text-sm font-semibold text-brand-400">${formatFileSize(storageUsed)}</span>
+                        </div>
+                        <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-brand-500 to-purple-600" style="width: ${Math.min(100, (storageUsed / (5 * 1024 * 1024)) * 100)}%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Browser limit: ~5MB. Large photos/videos consume more space.</p>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card-header"><h3 class="font-bold">Data Management</h3></div>
+                        <p class="text-gray-400 text-sm mb-4">Export your data as a backup, import from a file, or reset everything.</p>
+                        <div class="flex flex-wrap gap-3">
+                            <button id="exportDataBtn" class="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 text-blue-400 rounded-lg text-sm font-semibold transition-colors">📥 Export Data</button>
+                            <button id="importDataBtn" class="px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 text-purple-400 rounded-lg text-sm font-semibold transition-colors">📤 Import Data</button>
+                            <button id="resetDataBtn" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 rounded-lg text-sm font-semibold transition-colors">🔄 Reset to Defaults</button>
+                        </div>
+                        <input type="file" id="importFileInput" accept=".json" class="hidden">
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card-header"><h3 class="font-bold">Media Upload Guide</h3></div>
+                        <ul class="text-sm text-gray-400 space-y-2">
+                            <li>✅ <strong>Images:</strong> JPG, PNG, WebP — auto-compressed to max 1200px</li>
+                            <li>✅ <strong>Videos:</strong> MP4, WebM — max 10MB</li>
+                            <li>✅ <strong>Drag & drop</strong> supported on all upload fields</li>
+                            <li>✅ Click an uploaded image to <strong>replace</strong> it</li>
+                            <li>✅ Click the <strong>✕ button</strong> to remove media</li>
+                            <li>⚠️ If storage is full, try smaller files or export/import</li>
+                        </ul>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card-header"><h3 class="font-bold">About</h3></div>
+                        <p class="text-gray-400 text-sm leading-relaxed">LUMINA CMS v2.0 — Full content management with photo & video uploads. All data saved locally in your browser.</p>
+                    </div>`;
+            }
+
+            container.innerHTML = html;
+
+            // Initialize media uploaders
+            initMediaUploads();
+
+            // Bind settings buttons
+            if (tab === 'settings') {
+                document.getElementById('exportDataBtn')?.addEventListener('click', exportData);
+                document.getElementById('importDataBtn')?.addEventListener('click', () => document.getElementById('importFileInput').click());
+                document.getElementById('importFileInput')?.addEventListener('change', importData);
+                document.getElementById('resetDataBtn')?.addEventListener('click', resetData);
+            }
+        }
+
+        // ============ SAVE CHANGES ============
+        document.getElementById('saveChangesBtn').addEventListener('click', () => {
+            const inputs = document.querySelectorAll('#adminContent [data-path]');
+            inputs.forEach(input => {
+                const path = input.dataset.path;
+                let value = input.value;
+
+                if (input.dataset.type === 'array') {
+                    value = value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+                } else if (input.type === 'number') {
+                    value = Number(value);
+                } else if (input.tagName === 'SELECT' && (value === 'true' || value === 'false')) {
+                    value = value === 'true';
+                }
+
+                // Skip media fields (already saved during upload)
+                if (path.includes('.image') || path.includes('.video') || path.includes('.avatar')) {
+                    const current = getNestedValue(siteData, path);
+                    if (current && current.startsWith('data:')) return;
+                }
+
+                setNestedValue(siteData, path, value);
+            });
+
+            if (saveData(siteData)) {
+                renderAll();
+                showToast('Changes saved successfully! ✓');
+            }
+        });
+
+        function setNestedValue(obj, path, value) {
+            const keys = path.split('.');
+            let current = obj;
+            for (let i = 0; i < keys.length - 1; i++) {
+                const key = keys[i];
+                const nextKey = keys[i + 1];
+                if (!current[key]) {
+                    current[key] = isNaN(nextKey) ? {} : [];
+                }
+                current = current[key];
+            }
+            current[keys[keys.length - 1]] = value;
+        }
+
+        function getNestedValue(obj, path) {
+            const keys = path.split('.');
+            let current = obj;
+            for (const key of keys) {
+                if (current === undefined || current === null) return undefined;
+                current = current[key];
+            }
+            return current;
+        }
+
+        function escapeHtml(str) {
+            if (str === undefined || str === null) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        // ============ DATA MANAGEMENT ============
+        function exportData() {
+            const blob = new Blob([JSON.stringify(siteData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `lumina-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Data exported successfully!');
+        }
+
+        function importData(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const imported = JSON.parse(ev.target.result);
+                    siteData = imported;
+                    saveData(siteData);
+                    renderAll();
+                    switchTab(document.querySelector('.admin-tab.active').dataset.tab);
+                    showToast('Data imported successfully!');
+                } catch (err) {
+                    showToast('Invalid file format', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetData() {
+            if (confirm('Are you sure you want to reset all content (including photos/videos) to defaults? This cannot be undone.')) {
+                siteData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                saveData(siteData);
+                renderAll();
+                switchTab(document.querySelector('.admin-tab.active').dataset.tab);
+                showToast('All content reset to defaults');
+            }
+        }
+
+        // ============ PARTICLES ============
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 10 + 8) + 's';
+            particle.style.animationDelay = (Math.random() * 10) + 's';
+            particle.style.width = (Math.random() * 3 + 1) + 'px';
+            particle.style.height = particle.style.width;
+            particlesContainer.appendChild(particle);
+        }
+
+        // ============ NAVBAR SCROLL ============
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) navbar.classList.add('nav-scrolled');
+            else navbar.classList.remove('nav-scrolled');
+        });
+
+        // ============ MOBILE MENU ============
+        document.getElementById('menuBtn').addEventListener('click', () => document.getElementById('mobileMenu').classList.add('open'));
+        document.getElementById('closeMenu').addEventListener('click', () => document.getElementById('mobileMenu').classList.remove('open'));
+        document.querySelectorAll('.mobile-link').forEach(link => link.addEventListener('click', () => document.getElementById('mobileMenu').classList.remove('open')));
+
+        // ============ REVEAL ANIMATION ============
+        let revealObserver;
+        function initReveal() {
+            if (revealObserver) revealObserver.disconnect();
+            revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+            document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+        }
+
+        // ============ CONTACT FORM ============
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('formSuccess').classList.remove('hidden');
+            this.reset();
+            showToast('Inquiry sent! We will contact you soon 🙏');
+            setTimeout(() => document.getElementById('formSuccess').classList.add('hidden'), 5000);
+        });
+
+        // ============ SMOOTH SCROLL ============
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // ============ INIT ============
+        renderAll();
+    </script>
+</body>
+</html>
